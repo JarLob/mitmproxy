@@ -323,12 +323,9 @@ class NextLayer:
         match context.client.transport_protocol:
             case "tcp":
                 logger.info(
-                    f"_get_client_hello: starts_like_tls_record {starts_like_tls_record(data_client)}"
+                    f"_get_client_hello: starts_like_tls_record {starts_like_tls_record(data_client)} {data_client.hex()}"
                 )
                 if starts_like_tls_record(data_client):
-                    logger.info(
-                        f"starts_like_tls_record: true"
-                    )
                     try:
                         ch = parse_client_hello(data_client)
                     except ValueError:

@@ -339,6 +339,10 @@ class NextLayer:
                                 f"starts_like_tls_record: NeedsMoreData"
                             )
                             raise NeedsMoreData
+
+                        logger.info(
+                            f"parse_client_hello: {ch}"
+                        )
                         return ch
                 return None
             case "udp":

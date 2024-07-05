@@ -199,6 +199,10 @@ class NextLayer:
         Raises:
             NeedsMoreData, if we need to wait for more input data.
         """
+        logger.info(
+            f"_ignore_connection: {self._get_client_hello(context, data_client)}"
+        )
+        
         if not ctx.options.ignore_hosts and not ctx.options.allow_hosts:
             return False
         # Special handling for wireguard mode: if the hostname is "10.0.0.53", do not ignore the connection

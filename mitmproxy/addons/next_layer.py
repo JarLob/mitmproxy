@@ -238,16 +238,21 @@ class NextLayer:
                 if not re.search(r":\d+$", host_header):
                     host_header = f"{host_header}:{port}"
                 hostnames.append(host_header)
-        if (
-            client_hello := self._get_client_hello(context, data_client)
-        ) and client_hello.sni:
-            hostnames.append(f"{client_hello.sni}:{port}")
+            if (
+                client_hello := self._get_client_hello(context, data_client)
+            ):
+                if client_hello.sni:
+                    logger.info("_ignore_connection: adding client_hello.sni")
+                    hostnames.append(f"{client_hello.sni}:{port}")
+                elif context.server.sni:
+                    hostnames.append(f"{context.server.sni}:{port}")
+
+        logger.info(
+            f"_ignore_connection: context.server.sni {context.server.sni}"
+        )
 
         logger.info(
             f"_ignore_connection: hostnames {hostnames}"
-        )
-        logger.info(
-            f"_ignore_connection: context.server.sni {context.server.sni}"
         )
 
         if not hostnames:

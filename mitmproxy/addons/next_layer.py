@@ -246,6 +246,9 @@ class NextLayer:
         logger.info(
             f"_ignore_connection: hostnames {hostnames}"
         )
+        logger.info(
+            f"_ignore_connection: context.server.sni {context.server.sni}"
+        )
 
         if not hostnames:
             return False

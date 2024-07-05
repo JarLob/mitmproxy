@@ -59,7 +59,7 @@ def get_client_hello(data: bytes) -> bytes | None:
     """
 
     yield commands.Log(
-        f"parse_client_hello {data.hex()}"
+        f"parse_client_hello {data.hex()}", DEBUG
     )
 
     client_hello = b""

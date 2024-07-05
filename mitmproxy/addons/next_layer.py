@@ -231,7 +231,10 @@ class NextLayer:
         ) and client_hello.sni:
             hostnames.append(f"{client_hello.sni}:{port}")
 
-        f"_ignore_connection: hostnames {hostnames}"
+        logger.info(
+            f"_ignore_connection: hostnames {hostnames}"
+        )
+
         if not hostnames:
             return False
 

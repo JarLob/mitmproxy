@@ -199,8 +199,9 @@ class NextLayer:
         Raises:
             NeedsMoreData, if we need to wait for more input data.
         """
+
         logger.info(
-            f"_ignore_connection: {context.client.transport_protocol} {self._get_client_hello(context, data_client)}"
+            f"_ignore_connection: {self._get_client_hello(context, data_client)}"
         )
         
         if not ctx.options.ignore_hosts and not ctx.options.allow_hosts:
@@ -298,15 +299,29 @@ class NextLayer:
         Raises:
             NeedsMoreData, if the ClientHello is incomplete.
         """
+
+        logger.info(
+            f"_get_client_hello: {context.client.transport_protocol}"
+        )
+        
         match context.client.transport_protocol:
             case "tcp":
                 if starts_like_tls_record(data_client):
+                    logger.info(
+                        f"starts_like_tls_record: true"
+                    )
                     try:
                         ch = parse_client_hello(data_client)
                     except ValueError:
+                        logger.info(
+                            f"starts_like_tls_record: ValueError"
+                        )
                         pass
                     else:
                         if ch is None:
+                            logger.info(
+                                f"starts_like_tls_record: NeedsMoreData"
+                            )
                             raise NeedsMoreData
                         return ch
                 return None

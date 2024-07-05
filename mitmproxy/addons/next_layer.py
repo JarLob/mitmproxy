@@ -200,7 +200,7 @@ class NextLayer:
             NeedsMoreData, if we need to wait for more input data.
         """
         logger.info(
-            f"_ignore_connection: {self._get_client_hello(context, data_client)}"
+            f"_ignore_connection: {context.client.transport_protocol} {self._get_client_hello(context, data_client)}"
         )
         
         if not ctx.options.ignore_hosts and not ctx.options.allow_hosts:

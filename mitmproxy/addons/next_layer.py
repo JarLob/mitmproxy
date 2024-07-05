@@ -221,10 +221,10 @@ class NextLayer:
                 if not re.search(r":\d+$", host_header):
                     host_header = f"{host_header}:{port}"
                 hostnames.append(host_header)
-            if (
-                client_hello := self._get_client_hello(context, data_client)
-            ) and client_hello.sni:
-                hostnames.append(f"{client_hello.sni}:{port}")
+        if (
+            client_hello := self._get_client_hello(context, data_client)
+        ) and client_hello.sni:
+            hostnames.append(f"{client_hello.sni}:{port}")
 
         if not hostnames:
             return False

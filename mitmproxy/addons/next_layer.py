@@ -239,7 +239,7 @@ class NextLayer:
                     host_header = f"{host_header}:{port}"
                 hostnames.append(host_header)
 
-            client_hello := self._get_client_hello(context, data_client)
+            client_hello = self._get_client_hello(context, data_client)
             if client_hello.sni:
                 logger.info("_ignore_connection: adding client_hello.sni")
                 hostnames.append(f"{client_hello.sni}:{port}")

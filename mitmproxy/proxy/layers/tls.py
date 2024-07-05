@@ -57,6 +57,11 @@ def get_client_hello(data: bytes) -> bytes | None:
     Read all TLS records that contain the initial ClientHello.
     Returns the raw handshake packet bytes, without TLS record headers.
     """
+
+    yield commands.Log(
+        f"parse_client_hello {bytes.hex()}"
+    )
+
     client_hello = b""
     for d in handshake_record_contents(data):
         client_hello += d

@@ -322,6 +322,9 @@ class NextLayer:
         
         match context.client.transport_protocol:
             case "tcp":
+                logger.info(
+                    f"_get_client_hello: starts_like_tls_record {starts_like_tls_record(data_client)}"
+                )
                 if starts_like_tls_record(data_client):
                     logger.info(
                         f"starts_like_tls_record: true"

@@ -199,7 +199,6 @@ class NextLayer:
         Raises:
             NeedsMoreData, if we need to wait for more input data.
         """
-        
         if not ctx.options.ignore_hosts and not ctx.options.allow_hosts:
             return False
         # Special handling for wireguard mode: if the hostname is "10.0.0.53", do not ignore the connection
@@ -222,7 +221,6 @@ class NextLayer:
                 if not re.search(r":\d+$", host_header):
                     host_header = f"{host_header}:{port}"
                 hostnames.append(host_header)
-
             if (
                 client_hello := self._get_client_hello(context, data_client)
             ) and client_hello.sni:
@@ -299,7 +297,6 @@ class NextLayer:
         Raises:
             NeedsMoreData, if the ClientHello is incomplete.
         """
-        
         match context.client.transport_protocol:
             case "tcp":
                 if starts_like_tls_record(data_client):
@@ -310,7 +307,6 @@ class NextLayer:
                     else:
                         if ch is None:
                             raise NeedsMoreData
-
                         return ch
                 return None
             case "udp":

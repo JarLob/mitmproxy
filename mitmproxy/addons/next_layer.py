@@ -199,10 +199,6 @@ class NextLayer:
         Raises:
             NeedsMoreData, if we need to wait for more input data.
         """
-
-        logger.info(
-            f"_ignore_connection: allow_hosts {ctx.options.allow_hosts} ignore_hosts {ctx.options.ignore_hosts}"
-        )
         
         if not ctx.options.ignore_hosts and not ctx.options.allow_hosts:
             return False
@@ -210,49 +206,30 @@ class NextLayer:
         if isinstance(
             context.client.proxy_mode, mode_specs.WireGuardMode
         ) and context.server.address == ("10.0.0.53", 53):
-            logger.info(
-                f"_ignore_connection: 10.0.0.53"
-            )
             return False
         hostnames: list[str] = []
         if context.server.peername:
-            logger.info(
-                f"_ignore_connection: context.server.peername {context.server.peername}"
-            )
             host, port, *_ = context.server.peername
             hostnames.append(f"{host}:{port}")
         if context.server.address:
-            logger.info(
-                f"_ignore_connection: context.server.address {context.server.address}"
-            )
             host, port, *_ = context.server.address
             hostnames.append(f"{host}:{port}")
 
             # We also want to check for TLS SNI and HTTP host headers, but in order to ignore connections based on that
             # they must have a destination address. If they don't, we don't know how to establish an upstream connection
             # if we ignore.
-            logger.info(
-                f"_ignore_connection: host_header {self._get_host_header(context, data_client, data_server)}"
-            )
             if host_header := self._get_host_header(context, data_client, data_server):
                 if not re.search(r":\d+$", host_header):
                     host_header = f"{host_header}:{port}"
                 hostnames.append(host_header)
 
-            client_hello = self._get_client_hello(context, data_client)
-            if client_hello and client_hello.sni:
-                logger.info("_ignore_connection: adding client_hello.sni")
+            if (
+                client_hello := self._get_client_hello(context, data_client)
+            ) and client_hello.sni:
                 hostnames.append(f"{client_hello.sni}:{port}")
-            elif context.server.sni:
-                hostnames.append(f"{context.server.sni}:{port}")
-
-        logger.info(
-            f"_ignore_connection: context.server.sni {context.server.sni}"
-        )
-
-        logger.info(
-            f"_ignore_connection: hostnames {hostnames}"
-        )
+            if context.client.sni:
+                # Hostname may be allowed, TLS is already established, and we have another next layer decision.
+                hostnames.append(f"{context.client.sni}:{port}")
 
         if not hostnames:
             return False
@@ -322,34 +299,18 @@ class NextLayer:
         Raises:
             NeedsMoreData, if the ClientHello is incomplete.
         """
-
-        logger.info(
-            f"_get_client_hello: {context.client.transport_protocol}"
-        )
         
         match context.client.transport_protocol:
             case "tcp":
-                logger.info(
-                    f"_get_client_hello: starts_like_tls_record {starts_like_tls_record(data_client)} {data_client.hex()}"
-                )
                 if starts_like_tls_record(data_client):
                     try:
                         ch = parse_client_hello(data_client)
                     except ValueError:
-                        logger.info(
-                            f"starts_like_tls_record: ValueError"
-                        )
                         pass
                     else:
                         if ch is None:
-                            logger.info(
-                                f"starts_like_tls_record: NeedsMoreData"
-                            )
                             raise NeedsMoreData
 
-                        logger.info(
-                            f"parse_client_hello: {ch}"
-                        )
                         return ch
                 return None
             case "udp":

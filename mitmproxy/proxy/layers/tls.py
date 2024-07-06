@@ -58,8 +58,6 @@ def get_client_hello(data: bytes) -> bytes | None:
     Returns the raw handshake packet bytes, without TLS record headers.
     """
 
-    # print(f"get_client_hello {data.hex()}")
-
     client_hello = b""
     for d in handshake_record_contents(data):
         client_hello += d

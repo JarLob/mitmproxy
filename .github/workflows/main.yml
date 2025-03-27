@@ -47,6 +47,8 @@ jobs:
             py: "3.13"
           - os: windows-latest
             py: "3.13"
+          - os: macos-15 # public preview
+            py: "3.13"
           - os: macos-latest
             py: "3.13"
           - os: ubuntu-latest

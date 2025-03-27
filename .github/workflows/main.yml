@@ -85,6 +85,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - image: macos-15
+            platform: macos-arm64
           - image: macos-14
             platform: macos-arm64
           - image: macos-13
